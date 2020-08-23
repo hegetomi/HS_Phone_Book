@@ -49,26 +49,17 @@ public class Main {
 
         System.out.println("Start searching (hash table)...");
         HashTable<String, String> table = new HashTable<>(rows.size() * 3);
-        Hashtable<String, String> newTable = new Hashtable<>();
         long sortStart = System.currentTimeMillis();
 
-        for (int i = 0; i < rows.size(); i++) {
-            table.put(rows.get(i).getName(), rows.get(i).getPhoneNum());
+        for (PhoneBookEntry row : rows) {
+            table.put(row.getName(), row.getPhoneNum());
         }
 
         long sortEnd = System.currentTimeMillis();
-
-        //CreationTime
-        long sortTimeTaken = sortEnd - sortStart;
-        int sortMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(sortTimeTaken);
-        int sortSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(sortTimeTaken) - sortMinutes * 60;
-        long sortMilliseconds = (int) sortTimeTaken - TimeUnit.MINUTES.toMillis(sortMinutes) - TimeUnit.SECONDS.toMillis(sortSeconds);
-
         long startTime = System.currentTimeMillis();
-
         int found = 0;
-        for (int i = 0; i < namesToFind.size(); i++) {
-            if (table.get(namesToFind.get(i)) != null) {
+        for (String s : namesToFind) {
+            if (table.get(s) != null) {
                 found++;
             }
         }
@@ -76,19 +67,15 @@ public class Main {
 
         //SearchTime
         long timeTaken = endTime - startTime;
-        int minutes = (int) TimeUnit.MILLISECONDS.toMinutes(timeTaken);
-        int seconds = (int) TimeUnit.MILLISECONDS.toSeconds(timeTaken) - minutes * 60;
-        long milliseconds = (int) timeTaken - TimeUnit.MINUTES.toMillis(minutes) - TimeUnit.SECONDS.toMillis(seconds);
-
-        //allTime
+        long sortTimeTaken = sortEnd - sortStart;
         long allTimeTaken = (endTime + sortEnd) - (startTime + sortStart);
-        int allMinutes = (int) TimeUnit.MILLISECONDS.toMinutes(allTimeTaken);
-        int allSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(allTimeTaken) - allMinutes * 60;
-        long allMilliseconds = (int) allTimeTaken - TimeUnit.MINUTES.toMillis(allMinutes) - TimeUnit.SECONDS.toMillis(allSeconds);
 
         System.out.print("Found " + found + " / " + namesToFind.size() + " entries. ");
-        System.out.println("Time taken: " + allMinutes + " min. " + allSeconds + " sec. " + allMilliseconds + " ms.");
-        System.out.println("Creating time: " + sortMinutes + " min. " + sortSeconds + " sec. " + sortMilliseconds + " ms.");
+        TimeConverter.calcTime(allTimeTaken);
+        System.out.println("Time taken: " + minutes + " min. " + seconds + " sec. " + milliseconds + " ms.");
+        TimeConverter.calcTime(sortTimeTaken);
+        System.out.println("Creating time: " + minutes + " min. " + seconds + " sec. " + milliseconds + " ms.");
+        TimeConverter.calcTime(timeTaken);
         System.out.println("Searching time: " + minutes + " min. " + seconds + " sec. " + milliseconds + " ms.");
     }
 
@@ -126,8 +113,6 @@ public class Main {
         System.out.println("Searching time: " + minutes + " min. " + seconds + " sec. " + milliseconds + " ms.");
     }
 
-
-
     private static void readInFiles(String pathToDirectory, String pathToFind) {
         try {
             Files.lines(Paths.get(pathToDirectory))
@@ -140,7 +125,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
 
     public static void jumpDemo() {
 
